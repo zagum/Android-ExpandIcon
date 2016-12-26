@@ -72,6 +72,11 @@ public class ExpandIconView extends View {
     switchState(true);
   }
 
+  /**
+   * Changes state and updates view
+   *
+   * @param animate Indicates thaw state will be changed with animation or not
+   */
   public void switchState(boolean animate) {
     if (state == MORE) {
       setState(LESS, animate);
@@ -82,6 +87,12 @@ public class ExpandIconView extends View {
     }
   }
 
+  /**
+   * Set one of two states and updates view
+   *
+   * @param state {@link #MORE} or {@link #LESS}
+   * @param animate Indicates thaw state will be changed with animation or not
+   */
   public void setState(@State int state, boolean animate) {
     this.state = state;
     if (state == MORE) {
@@ -93,8 +104,11 @@ public class ExpandIconView extends View {
   }
 
   /**
-   * @see #MORE = 0
-   * @see #LESS = 1
+   * Set current fraction for arrow and updates view
+   *
+   * @param fraction Must be value from 0f to 1f {@link #MORE} state value is 0f, {@link #LESS}
+   * state value is 1f
+   * @throws IllegalArgumentException if fraction is less than 0f or more than 1f
    */
   public void setFraction(float fraction, boolean animate) {
     if (fraction < 0f || fraction > 1f) {
@@ -260,10 +274,6 @@ public class ExpandIconView extends View {
     return (long) (Math.abs(toAlpha - alpha) / animationSpeed);
   }
 
-  /**
-   * X = x0 + (x - x0) * cos(a) - (y - y0) * sin(a);
-   * Y = y0 + (y - y0) * cos(a) + (x - x0) * sin(a);
-   */
   private Point rotate(Point startPosition, double degrees) {
     double angle = Math.toRadians(degrees);
     int x = (int) (center.x + (startPosition.x - center.x) * Math.cos(angle) -
