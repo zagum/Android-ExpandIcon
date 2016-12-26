@@ -2,7 +2,6 @@ package com.github.zagum.expandiconview;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +12,6 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
   private ExpandIconView expandIconView1;
   private ExpandIconView expandIconView2;
   private ExpandIconView expandIconView3;
-  private View container;
   private GestureDetector gestureDetector;
   private View swipeDetectionView;
   private View click;
@@ -29,14 +27,6 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
 
     expandIconView1.setFraction(.5f, false);
     expandIconView2.setFraction(.5f, false);
-
-    container = findViewById(R.id.container);
-    container.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        expandIconView1.switchState();
-      }
-    });
 
     click = findViewById(R.id.click);
     click.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +74,6 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
 
   @Override
   public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    Log.d("speed", distanceY + "");
     float fraction;
     if (Math.signum(distanceY) > 0) {
       fraction = 1f;
