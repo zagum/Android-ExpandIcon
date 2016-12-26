@@ -1,6 +1,8 @@
 Android-ExpandIcon
 ================
 
+ [![Release](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
+
 Nice and simple customizable implementation of Google style up/down arrow.
 
 ![image](https://github.com/zagum/Android-ExpandIcon/blob/master/art/expand_icon_demo.gif)
@@ -28,7 +30,7 @@ Add the dependency
 
 ```groovy
 dependencies {
-    compile ''
+    compile 'com.github.zagum:Android-ExpandIcon:1.0.0'
 }
 ```
 
