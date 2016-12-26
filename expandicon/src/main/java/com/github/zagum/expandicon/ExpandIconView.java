@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.RequiresApi;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -65,6 +66,7 @@ public class ExpandIconView extends View {
   private Point right;
   private Point center;
   private final Path path = new Path();
+  private ValueAnimator arrowAnimator;
 
   public void switchState() {
     switchState(true);
@@ -96,8 +98,9 @@ public class ExpandIconView extends View {
    */
   public void setFraction(float fraction, boolean animate) {
     if (fraction < 0f || fraction > 1f) {
-      throw new IllegalArgumentException("Progress value must be from 0 to 100");
+      throw new IllegalArgumentException("Progress value must be from 0 to 1f, fraction=" + fraction);
     }
+    if (this.fraction == fraction) return;
     this.fraction = fraction;
     if (fraction == 0f) {
       state = MORE;
@@ -199,6 +202,7 @@ public class ExpandIconView extends View {
     if (animate) {
       animateArrow(toAlpha);
     } else {
+      cancelAnimation();
       alpha = toAlpha;
       if (switchColor) {
         updateColor(new ArgbEvaluator());
@@ -221,9 +225,11 @@ public class ExpandIconView extends View {
   }
 
   private void animateArrow(float toAlpha) {
-    final ValueAnimator animator = ValueAnimator.ofFloat(alpha, toAlpha);
+    cancelAnimation();
     final ArgbEvaluator colorEvaluator = new ArgbEvaluator();
-    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+    arrowAnimator = ValueAnimator.ofFloat(alpha, toAlpha);
+    arrowAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
       @Override
       public void onAnimationUpdate(ValueAnimator valueAnimator) {
         alpha = (float) valueAnimator.getAnimatedValue();
@@ -231,12 +237,18 @@ public class ExpandIconView extends View {
         if (switchColor) {
           updateColor(colorEvaluator);
         }
-        postInvalidateOnAnimation();
+        ViewCompat.postInvalidateOnAnimation(ExpandIconView.this);
       }
     });
-    animator.setInterpolator(new DecelerateInterpolator());
-    animator.setDuration(calculateAnimationDuration(toAlpha));
-    animator.start();
+    arrowAnimator.setInterpolator(new DecelerateInterpolator());
+    arrowAnimator.setDuration(calculateAnimationDuration(toAlpha));
+    arrowAnimator.start();
+  }
+
+  private void cancelAnimation() {
+    if (arrowAnimator != null && arrowAnimator.isRunning()) {
+      arrowAnimator.cancel();
+    }
   }
 
   private void updateColor(ArgbEvaluator colorEvaluator) {
