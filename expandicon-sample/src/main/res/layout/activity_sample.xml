@@ -6,21 +6,84 @@
     android:layout_height="match_parent"
     android:background="#fff">
 
-  <com.github.zagum.expandicon.ExpandIconView
-      android:id="@+id/expand_icon"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_gravity="center"
-      app:animationDuration="300"
-      app:color="#000"
-      app:colorLess="@color/colorPrimary"
-      app:colorMore="@color/colorAccent"
-      app:roundedCorners="false"
-      app:switchColor="true"/>
+  <FrameLayout
+      android:layout_width="80dp"
+      android:layout_height="wrap_content">
 
-  <View
-      android:id="@+id/swipe_detector"
+    <com.github.zagum.expandicon.ExpandIconView
+        android:id="@+id/expand_icon1"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        app:animationDuration="300"
+        app:color="#000"
+        app:roundedCorners="false"
+        app:switchColor="false"/>
+
+    <com.github.zagum.expandicon.ExpandIconView
+        android:id="@+id/expand_icon2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="56dp"
+        app:animationDuration="300"
+        app:color="#000"
+        app:colorLess="@color/colorPrimary"
+        app:colorMore="@color/colorAccent"
+        app:roundedCorners="false"
+        app:switchColor="true"/>
+
+  </FrameLayout>
+
+  <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="150dp">
+
+    <View
+        android:id="@+id/swipe_detector"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="80dp"
+        android:background="#f7f1f1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Swipe finger up and down"
+        android:textStyle="italic"/>
+
+  </FrameLayout>
+
+
+  <FrameLayout
+      android:id="@+id/click"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:layout_marginTop="200dp"
+      android:background="?selectableItemBackground">
+
+    <com.github.zagum.expandicon.ExpandIconView
+        android:id="@+id/expand_icon3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="16dp"
+        app:animationDuration="300"
+        app:color="#000"
+        app:colorLess="@color/colorPrimary"
+        app:colorMore="@color/colorAccent"
+        app:roundedCorners="false"
+        app:switchColor="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Click"
+        android:textStyle="bold"/>
+
+  </FrameLayout>
 
 </FrameLayout>
