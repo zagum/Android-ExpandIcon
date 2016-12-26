@@ -1,0 +1,26 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+
+  <com.github.zagum.expandicon.ExpandIconView
+      android:id="@+id/expand_icon"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_gravity="center"
+      app:animationDuration="300"
+      app:color="#000"
+      app:colorLess="@color/colorPrimary"
+      app:colorMore="@color/colorAccent"
+      app:roundedCorners="false"
+      app:switchColor="true"/>
+
+  <View
+      android:id="@+id/swipe_detector"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+</FrameLayout>

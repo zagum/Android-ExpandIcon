@@ -1,0 +1,10 @@
+<resources>
+  <declare-styleable name="ExpandIconView">
+    <attr name="roundedCorners" format="boolean"/>
+    <attr name="switchColor" format="boolean"/>
+    <attr name="color" format="color"/>
+    <attr name="colorMore" format="color"/>
+    <attr name="colorLess" format="color"/>
+    <attr name="animationDuration" format="integer"/>
+  </declare-styleable>
+</resources>
