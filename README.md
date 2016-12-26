@@ -2,6 +2,7 @@ Android-ExpandIcon
 ================
 
  [![Release](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
+[![API](https://img.shields.io/badge/API-15%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=15)
 
 Nice and simple customizable implementation of Google style up/down arrow.
 
