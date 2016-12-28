@@ -112,7 +112,7 @@ public class ExpandIconView extends View {
    */
   public void setFraction(float fraction, boolean animate) {
     if (fraction < 0f || fraction > 1f) {
-      throw new IllegalArgumentException("Progress value must be from 0 to 1f, fraction=" + fraction);
+      throw new IllegalArgumentException("Fraction value must be from 0 to 1f, fraction=" + fraction);
     }
     if (this.fraction == fraction) return;
     this.fraction = fraction;
