@@ -10,11 +10,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -34,41 +37,86 @@ public class ExpandIconView extends View {
       LESS,
       INTERMEDIATE
   })
-
   @Retention(RetentionPolicy.SOURCE)
-
   public @interface State {
   }
 
   public static final int MORE = 0;
   public static final int LESS = 1;
-  private static final int INTERMEDIATE = 2;
+  public static final int INTERMEDIATE = 2;
 
   @State
   private int state;
-  private int width;
-  private int height;
-  private int arrowWidth;
   private float alpha = MORE_STATE_ALPHA;
   private float centerTranslation = 0f;
+  @FloatRange(from = 0.f, to = 1.f)
   private float fraction = 0f;
-  private float animationSpeed;
-  private boolean useDefaultPadding;
+  private final float animationSpeed;
 
-  private boolean roundedCorners = false;
   private boolean switchColor = false;
-  private long animationDuration = DEFAULT_ANIMATION_DURATION;
   private int color = Color.BLACK;
-  private int colorMore = Color.BLACK;
-  private int colorLess = Color.RED;
+  private final int colorMore;
+  private final int colorLess;
+
+  @NonNull
+  private final Paint paint;
+  private final Point left = new Point();
+  private final Point right = new Point();
+  private final Point center = new Point();
+  private final Point tempLeft = new Point();
+  private final Point tempRight = new Point();
+
+  private final boolean useDefaultPadding;
   private int padding;
 
-  private Paint paint;
-  private Point left;
-  private Point right;
-  private Point center;
   private final Path path = new Path();
+  @Nullable
   private ValueAnimator arrowAnimator;
+
+  public ExpandIconView(@NonNull Context context) {
+    this(context, null);
+  }
+
+  public ExpandIconView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public ExpandIconView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    super(context, attrs, defStyleAttr);
+
+    TypedArray array = getContext().getTheme().obtainStyledAttributes(attrs,
+            R.styleable.ExpandIconView,
+            0, 0);
+
+    final boolean roundedCorners;
+    final long animationDuration;
+    try {
+      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_roundedCorners, false);
+      switchColor = array.getBoolean(R.styleable.ExpandIconView_switchColor, false);
+      color = array.getColor(R.styleable.ExpandIconView_color, Color.BLACK);
+      colorMore = array.getColor(R.styleable.ExpandIconView_colorMore, Color.BLACK);
+      colorLess = array.getColor(R.styleable.ExpandIconView_colorLess, Color.BLACK);
+      animationDuration = array.getInteger(R.styleable.ExpandIconView_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
+      padding = array.getDimensionPixelSize(R.styleable.ExpandIconView_eiv_padding, -1);
+      useDefaultPadding = (padding == -1);
+    } finally {
+      array.recycle();
+    }
+
+    {
+      paint = new Paint(ANTI_ALIAS_FLAG);
+      paint.setColor(color);
+      paint.setStyle(Paint.Style.STROKE);
+      paint.setDither(true);
+      if (roundedCorners) {
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+      }
+    }
+
+    animationSpeed = DELTA_ALPHA / animationDuration;
+    setState(MORE, false);
+  }
 
   public void switchState() {
     switchState(true);
@@ -80,13 +128,21 @@ public class ExpandIconView extends View {
    * @param animate Indicates thaw state will be changed with animation or not
    */
   public void switchState(boolean animate) {
-    if (state == MORE) {
-      setState(LESS, animate);
-    } else if (state == LESS) {
-      setState(MORE, animate);
-    } else {
-      setState(getFinalStateByFraction(), animate);
+    final int newState;
+    switch (state) {
+      case MORE:
+        newState = LESS;
+        break;
+      case LESS:
+        newState = MORE;
+        break;
+      case INTERMEDIATE:
+        newState = getFinalStateByFraction();
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown state [" + state + "]");
     }
+    setState(newState, animate);
   }
 
   /**
@@ -115,11 +171,15 @@ public class ExpandIconView extends View {
    * state value is 1f
    * @throws IllegalArgumentException if fraction is less than 0f or more than 1f
    */
-  public void setFraction(float fraction, boolean animate) {
+  public void setFraction(@FloatRange(from = 0.f, to = 1.f) float fraction, boolean animate) {
     if (fraction < 0f || fraction > 1f) {
       throw new IllegalArgumentException("Fraction value must be from 0 to 1f, fraction=" + fraction);
     }
-    if (this.fraction == fraction) return;
+
+    if (this.fraction == fraction) {
+      return;
+    }
+
     this.fraction = fraction;
     if (fraction == 0f) {
       state = MORE;
@@ -128,31 +188,8 @@ public class ExpandIconView extends View {
     } else {
       state = INTERMEDIATE;
     }
+
     updateArrow(animate);
-  }
-
-  public ExpandIconView(Context context) {
-    super(context);
-    init();
-  }
-
-  public ExpandIconView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-    readAttributes(attrs);
-    init();
-  }
-
-  public ExpandIconView(Context context, AttributeSet attrs, int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-    readAttributes(attrs);
-    init();
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-  public ExpandIconView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
-    readAttributes(attrs);
-    init();
   }
 
   @Override
@@ -165,35 +202,15 @@ public class ExpandIconView extends View {
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    width = getMeasuredWidth();
-    height = getMeasuredHeight();
     calculateArrowMetrics();
     updateArrowPath();
   }
 
-  private void readAttributes(AttributeSet attrs) {
-    TypedArray array = getContext().getTheme().obtainStyledAttributes(
-        attrs,
-        R.styleable.ExpandIconView,
-        0, 0);
-
-    try {
-      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_eiv_roundedCorners, false);
-      switchColor = array.getBoolean(R.styleable.ExpandIconView_eiv_switchColor, false);
-      color = array.getColor(R.styleable.ExpandIconView_eiv_color, Color.BLACK);
-      colorMore = array.getColor(R.styleable.ExpandIconView_eiv_colorMore, Color.BLACK);
-      colorLess = array.getColor(R.styleable.ExpandIconView_eiv_colorLess, Color.BLACK);
-      animationDuration = array.getInteger(R.styleable.ExpandIconView_eiv_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
-      padding = array.getDimensionPixelSize(R.styleable.ExpandIconView_eiv_padding, -1);
-      if (padding == -1) useDefaultPadding = true;
-    } finally {
-      array.recycle();
-    }
-  }
-
   private void calculateArrowMetrics() {
-    int arrowMaxHeight = height - 2 * padding;
-    arrowWidth = width - 2 * padding;
+    final int width = getMeasuredWidth();
+    final int height = getMeasuredHeight();
+    final int arrowMaxHeight = height - 2 * padding;
+    int arrowWidth = width - 2 * padding;
     arrowWidth = arrowMaxHeight >= arrowWidth ? arrowWidth : arrowMaxHeight;
 
     if (useDefaultPadding) {
@@ -206,25 +223,6 @@ public class ExpandIconView extends View {
     center.set(width / 2, height / 2);
     left.set(center.x - arrowWidth / 2, center.y);
     right.set(center.x + arrowWidth / 2, center.y);
-  }
-
-  private void init() {
-    paint = new Paint(ANTI_ALIAS_FLAG);
-    paint.setColor(color);
-    paint.setStyle(Paint.Style.STROKE);
-    paint.setDither(true);
-    if (roundedCorners) {
-      paint.setStrokeJoin(Paint.Join.ROUND);
-      paint.setStrokeCap(Paint.Cap.ROUND);
-    }
-
-    left = new Point();
-    right = new Point();
-    center = new Point();
-
-    animationSpeed = DELTA_ALPHA / animationDuration;
-
-    setState(MORE, false);
   }
 
   private void updateArrow(boolean animate) {
@@ -245,21 +243,22 @@ public class ExpandIconView extends View {
   private void updateArrowPath() {
     path.reset();
     if (left != null && right != null) {
-      Point currLeft = rotate(left, -alpha);
-      Point currRight = rotate(right, alpha);
-      centerTranslation = (center.y - currLeft.y) / 2;
-      path.moveTo(currLeft.x, currLeft.y);
+      rotate(left, -alpha, tempLeft);
+      rotate(right, alpha, tempRight);
+      centerTranslation = (center.y - tempLeft.y) / 2;
+      path.moveTo(tempLeft.x, tempLeft.y);
       path.lineTo(center.x, center.y);
-      path.lineTo(currRight.x, currRight.y);
+      path.lineTo(tempRight.x, tempRight.y);
     }
   }
 
   private void animateArrow(float toAlpha) {
     cancelAnimation();
-    final ArgbEvaluator colorEvaluator = new ArgbEvaluator();
 
-    arrowAnimator = ValueAnimator.ofFloat(alpha, toAlpha);
-    arrowAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+    final ValueAnimator valueAnimator = ValueAnimator.ofFloat(alpha, toAlpha);
+    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+      private final ArgbEvaluator colorEvaluator = new ArgbEvaluator();
+
       @Override
       public void onAnimationUpdate(ValueAnimator valueAnimator) {
         alpha = (float) valueAnimator.getAnimatedValue();
@@ -270,9 +269,11 @@ public class ExpandIconView extends View {
         postInvalidateOnAnimationCompat();
       }
     });
-    arrowAnimator.setInterpolator(new DecelerateInterpolator());
-    arrowAnimator.setDuration(calculateAnimationDuration(toAlpha));
-    arrowAnimator.start();
+    valueAnimator.setInterpolator(new DecelerateInterpolator());
+    valueAnimator.setDuration(calculateAnimationDuration(toAlpha));
+    valueAnimator.start();
+
+    arrowAnimator = valueAnimator;
   }
 
   private void cancelAnimation() {
@@ -281,7 +282,7 @@ public class ExpandIconView extends View {
     }
   }
 
-  private void updateColor(ArgbEvaluator colorEvaluator) {
+  private void updateColor(@NonNull ArgbEvaluator colorEvaluator) {
     color = (int) colorEvaluator.evaluate((alpha + 45f) / 90f, colorMore, colorLess);
     paint.setColor(color);
   }
@@ -290,14 +291,15 @@ public class ExpandIconView extends View {
     return (long) (Math.abs(toAlpha - alpha) / animationSpeed);
   }
 
-  private Point rotate(Point startPosition, double degrees) {
+  private void rotate(@NonNull Point startPosition, double degrees, @NonNull Point target) {
     double angle = Math.toRadians(degrees);
     int x = (int) (center.x + (startPosition.x - center.x) * Math.cos(angle) -
         (startPosition.y - center.y) * Math.sin(angle));
 
     int y = (int) (center.y + (startPosition.x - center.x) * Math.sin(angle) +
         (startPosition.y - center.y) * Math.cos(angle));
-    return new Point(x, y);
+
+    target.set(x, y);
   }
 
   @State
