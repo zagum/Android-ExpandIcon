@@ -1,7 +1,13 @@
 apply plugin: 'com.android.application'
 
+allprojects {
+  repositories {
+    maven { url 'https://jitpack.io' }
+  }
+}
+
 dependencies {
-  compile project(':expandicon')
+  compile 'com.github.zagum:Android-ExpandIcon:1.1.0'
   compile 'com.android.support:appcompat-v7:25.1.0'
 }
 
