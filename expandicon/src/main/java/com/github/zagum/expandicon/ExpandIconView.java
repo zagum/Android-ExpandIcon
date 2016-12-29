@@ -91,12 +91,12 @@ public class ExpandIconView extends View {
     final boolean roundedCorners;
     final long animationDuration;
     try {
-      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_roundedCorners, false);
-      switchColor = array.getBoolean(R.styleable.ExpandIconView_switchColor, false);
-      color = array.getColor(R.styleable.ExpandIconView_color, Color.BLACK);
-      colorMore = array.getColor(R.styleable.ExpandIconView_colorMore, Color.BLACK);
-      colorLess = array.getColor(R.styleable.ExpandIconView_colorLess, Color.BLACK);
-      animationDuration = array.getInteger(R.styleable.ExpandIconView_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
+      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_eiv_roundedCorners, false);
+      switchColor = array.getBoolean(R.styleable.ExpandIconView_eiv_switchColor, false);
+      color = array.getColor(R.styleable.ExpandIconView_eiv_color, Color.BLACK);
+      colorMore = array.getColor(R.styleable.ExpandIconView_eiv_colorMore, Color.BLACK);
+      colorLess = array.getColor(R.styleable.ExpandIconView_eiv_colorLess, Color.BLACK);
+      animationDuration = array.getInteger(R.styleable.ExpandIconView_eiv_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
       padding = array.getDimensionPixelSize(R.styleable.ExpandIconView_eiv_padding, -1);
       useDefaultPadding = (padding == -1);
     } finally {
