@@ -50,7 +50,6 @@ Fully customized implementation:
 
 ```xml
     <com.github.zagum.expandicon.ExpandIconView
-        android:id="@+id/expand_icon2"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
