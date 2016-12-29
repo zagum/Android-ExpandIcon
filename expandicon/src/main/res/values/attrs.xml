@@ -1,10 +1,11 @@
 <resources>
   <declare-styleable name="ExpandIconView">
-    <attr name="roundedCorners" format="boolean"/>
-    <attr name="switchColor" format="boolean"/>
-    <attr name="color" format="color"/>
-    <attr name="colorMore" format="color"/>
-    <attr name="colorLess" format="color"/>
-    <attr name="animationDuration" format="integer"/>
+    <attr name="eiv_roundedCorners" format="boolean"/>
+    <attr name="eiv_switchColor" format="boolean"/>
+    <attr name="eiv_color" format="color"/>
+    <attr name="eiv_colorMore" format="color"/>
+    <attr name="eiv_colorLess" format="color"/>
+    <attr name="eiv_animationDuration" format="integer"/>
+    <attr name="eiv_padding" format="dimension"/>
   </declare-styleable>
 </resources>

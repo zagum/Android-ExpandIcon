@@ -10,14 +10,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
-import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
@@ -27,24 +22,13 @@ public class ExpandIconView extends View {
   private static final float LESS_STATE_ALPHA = 45f;
   private static final float DELTA_ALPHA = 90f;
   private static final float THICKNESS_PROPORTION = 5f / 36f;
+  private static final float PADDING_PROPORTION = 4f / 24f;
   private static final long DEFAULT_ANIMATION_DURATION = 150;
 
-  @IntDef({
-      MORE,
-      LESS,
-      INTERMEDIATE
-  })
+  public static final int STATE_MORE = 0;
+  public static final int STATE_LESS = 1;
+  private static final int STATE_INTERMEDIATE = 2;
 
-  @Retention(RetentionPolicy.SOURCE)
-
-  public @interface State {
-  }
-
-  public static final int MORE = 0;
-  public static final int LESS = 1;
-  private static final int INTERMEDIATE = 2;
-
-  @State
   private int state;
   private int width;
   private int height;
@@ -53,6 +37,7 @@ public class ExpandIconView extends View {
   private float centerTranslation = 0f;
   private float fraction = 0f;
   private float animationSpeed;
+  private boolean useDefaultPadding;
 
   private boolean roundedCorners = false;
   private boolean switchColor = false;
@@ -60,6 +45,7 @@ public class ExpandIconView extends View {
   private int color = Color.BLACK;
   private int colorMore = Color.BLACK;
   private int colorLess = Color.RED;
+  private int padding;
 
   private Paint paint;
   private Point left;
@@ -78,10 +64,10 @@ public class ExpandIconView extends View {
    * @param animate Indicates thaw state will be changed with animation or not
    */
   public void switchState(boolean animate) {
-    if (state == MORE) {
-      setState(LESS, animate);
-    } else if (state == LESS) {
-      setState(MORE, animate);
+    if (state == STATE_MORE) {
+      setState(STATE_LESS, animate);
+    } else if (state == STATE_LESS) {
+      setState(STATE_MORE, animate);
     } else {
       setState(getFinalStateByFraction(), animate);
     }
@@ -90,14 +76,14 @@ public class ExpandIconView extends View {
   /**
    * Set one of two states and updates view
    *
-   * @param state {@link #MORE} or {@link #LESS}
+   * @param state {@link #STATE_MORE} or {@link #STATE_LESS}
    * @param animate Indicates thaw state will be changed with animation or not
    */
-  public void setState(@State int state, boolean animate) {
+  public void setState(int state, boolean animate) {
     this.state = state;
-    if (state == MORE) {
+    if (state == STATE_MORE) {
       fraction = 0f;
-    } else if (state == LESS) {
+    } else if (state == STATE_LESS) {
       fraction = 1f;
     }
     updateArrow(animate);
@@ -106,7 +92,7 @@ public class ExpandIconView extends View {
   /**
    * Set current fraction for arrow and updates view
    *
-   * @param fraction Must be value from 0f to 1f {@link #MORE} state value is 0f, {@link #LESS}
+   * @param fraction Must be value from 0f to 1f {@link #STATE_MORE} state value is 0f, {@link #STATE_LESS}
    * state value is 1f
    * @throws IllegalArgumentException if fraction is less than 0f or more than 1f
    */
@@ -117,11 +103,11 @@ public class ExpandIconView extends View {
     if (this.fraction == fraction) return;
     this.fraction = fraction;
     if (fraction == 0f) {
-      state = MORE;
+      state = STATE_MORE;
     } else if (fraction == 1f) {
-      state = LESS;
+      state = STATE_LESS;
     } else {
-      state = INTERMEDIATE;
+      state = STATE_INTERMEDIATE;
     }
     updateArrow(animate);
   }
@@ -143,13 +129,6 @@ public class ExpandIconView extends View {
     init();
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-  public ExpandIconView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
-    readAttributes(attrs);
-    init();
-  }
-
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
@@ -162,8 +141,38 @@ public class ExpandIconView extends View {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     width = getMeasuredWidth();
     height = getMeasuredHeight();
+    calculateArrowMetrics();
+    updateArrowPath();
+  }
 
-    arrowWidth = height >= width ? width : height;
+  private void readAttributes(AttributeSet attrs) {
+    TypedArray array = getContext().getTheme().obtainStyledAttributes(
+        attrs,
+        R.styleable.ExpandIconView,
+        0, 0);
+
+    try {
+      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_eiv_roundedCorners, false);
+      switchColor = array.getBoolean(R.styleable.ExpandIconView_eiv_switchColor, false);
+      color = array.getColor(R.styleable.ExpandIconView_eiv_color, Color.BLACK);
+      colorMore = array.getColor(R.styleable.ExpandIconView_eiv_colorMore, Color.BLACK);
+      colorLess = array.getColor(R.styleable.ExpandIconView_eiv_colorLess, Color.BLACK);
+      animationDuration = array.getInteger(R.styleable.ExpandIconView_eiv_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
+      padding = array.getDimensionPixelSize(R.styleable.ExpandIconView_eiv_padding, -1);
+      if (padding == -1) useDefaultPadding = true;
+    } finally {
+      array.recycle();
+    }
+  }
+
+  private void calculateArrowMetrics() {
+    int arrowMaxHeight = height - 2 * padding;
+    arrowWidth = width - 2 * padding;
+    arrowWidth = arrowMaxHeight >= arrowWidth ? arrowWidth : arrowMaxHeight;
+
+    if (useDefaultPadding) {
+      padding = (int) (PADDING_PROPORTION * width);
+    }
 
     float thickness = (int) (arrowWidth * THICKNESS_PROPORTION);
     paint.setStrokeWidth(thickness);
@@ -171,7 +180,6 @@ public class ExpandIconView extends View {
     center.set(width / 2, height / 2);
     left.set(center.x - arrowWidth / 2, center.y);
     right.set(center.x + arrowWidth / 2, center.y);
-    updateArrowPath();
   }
 
   private void init() {
@@ -190,25 +198,7 @@ public class ExpandIconView extends View {
 
     animationSpeed = DELTA_ALPHA / animationDuration;
 
-    setState(MORE, false);
-  }
-
-  private void readAttributes(AttributeSet attrs) {
-    TypedArray array = getContext().getTheme().obtainStyledAttributes(
-        attrs,
-        R.styleable.ExpandIconView,
-        0, 0);
-
-    try {
-      roundedCorners = array.getBoolean(R.styleable.ExpandIconView_roundedCorners, false);
-      switchColor = array.getBoolean(R.styleable.ExpandIconView_switchColor, false);
-      color = array.getColor(R.styleable.ExpandIconView_color, Color.BLACK);
-      colorMore = array.getColor(R.styleable.ExpandIconView_colorMore, Color.BLACK);
-      colorLess = array.getColor(R.styleable.ExpandIconView_colorLess, Color.BLACK);
-      animationDuration = array.getInteger(R.styleable.ExpandIconView_animationDuration, (int) DEFAULT_ANIMATION_DURATION);
-    } finally {
-      array.recycle();
-    }
+    setState(STATE_MORE, false);
   }
 
   private void updateArrow(boolean animate) {
@@ -251,7 +241,7 @@ public class ExpandIconView extends View {
         if (switchColor) {
           updateColor(colorEvaluator);
         }
-        ViewCompat.postInvalidateOnAnimation(ExpandIconView.this);
+        postInvalidateOnAnimationCompat();
       }
     });
     arrowAnimator.setInterpolator(new DecelerateInterpolator());
@@ -284,12 +274,20 @@ public class ExpandIconView extends View {
     return new Point(x, y);
   }
 
-  @State
   private int getFinalStateByFraction() {
     if (fraction <= .5f) {
-      return MORE;
+      return STATE_MORE;
     } else {
-      return LESS;
+      return STATE_LESS;
+    }
+  }
+
+  private void postInvalidateOnAnimationCompat() {
+    final long fakeFrameTime = 10;
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+      postInvalidateOnAnimation();
+    } else {
+      postInvalidateDelayed(fakeFrameTime);
     }
   }
 }
