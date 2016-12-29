@@ -16,10 +16,10 @@
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
-        app:animationDuration="300"
-        app:color="#000"
-        app:roundedCorners="false"
-        app:switchColor="false"/>
+        app:eiv_animationDuration="300"
+        app:eiv_color="#000"
+        app:eiv_roundedCorners="false"
+        app:eiv_switchColor="false"/>
 
     <com.github.zagum.expandicon.ExpandIconView
         android:id="@+id/expand_icon2"
@@ -27,12 +27,13 @@
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="56dp"
-        app:animationDuration="300"
-        app:color="#000"
-        app:colorLess="@color/colorPrimary"
-        app:colorMore="@color/colorAccent"
-        app:roundedCorners="false"
-        app:switchColor="true"/>
+        app:eiv_animationDuration="300"
+        app:eiv_color="#000"
+        app:eiv_colorLess="@color/colorPrimary"
+        app:eiv_colorMore="@color/colorAccent"
+        app:eiv_roundedCorners="false"
+        app:eiv_switchColor="true"
+        app:eiv_padding="8dp"/>
 
   </FrameLayout>
 
@@ -70,12 +71,12 @@
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="16dp"
-        app:animationDuration="300"
-        app:color="#000"
-        app:colorLess="@color/colorPrimary"
-        app:colorMore="@color/colorAccent"
-        app:roundedCorners="false"
-        app:switchColor="true"/>
+        app:eiv_animationDuration="300"
+        app:eiv_color="#000"
+        app:eiv_colorLess="@color/colorPrimary"
+        app:eiv_colorMore="@color/colorAccent"
+        app:eiv_roundedCorners="false"
+        app:eiv_switchColor="true"/>
 
     <TextView
         android:layout_width="wrap_content"
