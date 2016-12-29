@@ -10,9 +10,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
+import android.support.annotation.IntDef;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
@@ -25,10 +29,22 @@ public class ExpandIconView extends View {
   private static final float PADDING_PROPORTION = 4f / 24f;
   private static final long DEFAULT_ANIMATION_DURATION = 150;
 
-  public static final int STATE_MORE = 0;
-  public static final int STATE_LESS = 1;
-  private static final int STATE_INTERMEDIATE = 2;
+  @IntDef({
+      MORE,
+      LESS,
+      INTERMEDIATE
+  })
 
+  @Retention(RetentionPolicy.SOURCE)
+
+  public @interface State {
+  }
+
+  public static final int MORE = 0;
+  public static final int LESS = 1;
+  private static final int INTERMEDIATE = 2;
+
+  @State
   private int state;
   private int width;
   private int height;
@@ -64,10 +80,10 @@ public class ExpandIconView extends View {
    * @param animate Indicates thaw state will be changed with animation or not
    */
   public void switchState(boolean animate) {
-    if (state == STATE_MORE) {
-      setState(STATE_LESS, animate);
-    } else if (state == STATE_LESS) {
-      setState(STATE_MORE, animate);
+    if (state == MORE) {
+      setState(LESS, animate);
+    } else if (state == LESS) {
+      setState(MORE, animate);
     } else {
       setState(getFinalStateByFraction(), animate);
     }
@@ -76,15 +92,18 @@ public class ExpandIconView extends View {
   /**
    * Set one of two states and updates view
    *
-   * @param state {@link #STATE_MORE} or {@link #STATE_LESS}
+   * @param state {@link #MORE} or {@link #LESS}
    * @param animate Indicates thaw state will be changed with animation or not
+   * @throws IllegalArgumentException if {@param state} is invalid
    */
-  public void setState(int state, boolean animate) {
+  public void setState(@State int state, boolean animate) {
     this.state = state;
-    if (state == STATE_MORE) {
+    if (state == MORE) {
       fraction = 0f;
-    } else if (state == STATE_LESS) {
+    } else if (state == LESS) {
       fraction = 1f;
+    } else {
+      throw new IllegalArgumentException("Unknown state, must be one of STATE_MORE = 0,  STATE_LESS = 1");
     }
     updateArrow(animate);
   }
@@ -92,7 +111,7 @@ public class ExpandIconView extends View {
   /**
    * Set current fraction for arrow and updates view
    *
-   * @param fraction Must be value from 0f to 1f {@link #STATE_MORE} state value is 0f, {@link #STATE_LESS}
+   * @param fraction Must be value from 0f to 1f {@link #MORE} state value is 0f, {@link #LESS}
    * state value is 1f
    * @throws IllegalArgumentException if fraction is less than 0f or more than 1f
    */
@@ -103,11 +122,11 @@ public class ExpandIconView extends View {
     if (this.fraction == fraction) return;
     this.fraction = fraction;
     if (fraction == 0f) {
-      state = STATE_MORE;
+      state = MORE;
     } else if (fraction == 1f) {
-      state = STATE_LESS;
+      state = LESS;
     } else {
-      state = STATE_INTERMEDIATE;
+      state = INTERMEDIATE;
     }
     updateArrow(animate);
   }
@@ -125,6 +144,13 @@ public class ExpandIconView extends View {
 
   public ExpandIconView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    readAttributes(attrs);
+    init();
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+  public ExpandIconView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    super(context, attrs, defStyleAttr, defStyleRes);
     readAttributes(attrs);
     init();
   }
@@ -198,7 +224,7 @@ public class ExpandIconView extends View {
 
     animationSpeed = DELTA_ALPHA / animationDuration;
 
-    setState(STATE_MORE, false);
+    setState(MORE, false);
   }
 
   private void updateArrow(boolean animate) {
@@ -274,11 +300,12 @@ public class ExpandIconView extends View {
     return new Point(x, y);
   }
 
+  @State
   private int getFinalStateByFraction() {
     if (fraction <= .5f) {
-      return STATE_MORE;
+      return MORE;
     } else {
-      return STATE_LESS;
+      return LESS;
     }
   }
 
