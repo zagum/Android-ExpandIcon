@@ -43,7 +43,7 @@ public class ExpandIconView extends View {
 
   public static final int MORE = 0;
   public static final int LESS = 1;
-  public static final int INTERMEDIATE = 2;
+  private static final int INTERMEDIATE = 2;
 
   @State
   private int state;
