@@ -200,23 +200,18 @@ public class ExpandIconView extends View {
   }
 
   @Override
-  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    calculateArrowMetrics();
+  protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+    super.onSizeChanged(width, height, oldWidth, oldHeight);
+    calculateArrowMetrics(width, height);
     updateArrowPath();
   }
 
-  private void calculateArrowMetrics() {
-    final int width = getMeasuredWidth();
-    final int height = getMeasuredHeight();
-    final int arrowMaxHeight = height - 2 * padding;
-    int arrowWidth = width - 2 * padding;
-    arrowWidth = arrowMaxHeight >= arrowWidth ? arrowWidth : arrowMaxHeight;
-
+  private void calculateArrowMetrics(int width, int height) {
+    final int arrowMaxWidth = (height >= width ? width : height);
     if (useDefaultPadding) {
-      padding = (int) (PADDING_PROPORTION * width);
+      padding = (int) (PADDING_PROPORTION * arrowMaxWidth);
     }
-
+    final int arrowWidth = arrowMaxWidth - 2 * padding;
     float thickness = (int) (arrowWidth * THICKNESS_PROPORTION);
     paint.setStrokeWidth(thickness);
 
