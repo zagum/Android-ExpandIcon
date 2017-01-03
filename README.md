@@ -1,14 +1,15 @@
 Android-ExpandIcon
 ================
 
- [![Release](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--ExpandIcon-brightgreen.svg?style=flat)]()
+[![Release](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
 [![API](https://img.shields.io/badge/API-15%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=15)
 
 Nice and simple customizable implementation of Google style up/down arrow.
 
 ![image](https://github.com/zagum/Android-ExpandIcon/blob/master/art/expand_icon_demo.gif)
 
-Another nice example of using this library: https://github.com/hearsilent/PixelSlide
+Another nice example of using this library: [Pixel Slide by hearsilent](https://github.com/hearsilent/PixelSlide)
 
 Compatibility
 -------------
