@@ -1,1 +1,1 @@
-include ':expandicon-sample', ':expandicon'
+include ':expandicon', ':expandicon-sample'

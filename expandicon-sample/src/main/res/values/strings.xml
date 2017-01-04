@@ -1,4 +1,7 @@
 <resources>
-  <string name="app_name">ExpandIconView</string>
-  <string name="title_activity_sample">SampleActivity</string>
+
+  <string name="app_name">ExpandIcon</string>
+  <string name="swipe_finger_up_and_down">Swipe finger up and down</string>
+  <string name="click">Click</string>
+
 </resources>
