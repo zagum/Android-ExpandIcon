@@ -1,10 +1,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff">
+    tools:context=".SampleActivity">
 
   <FrameLayout
       android:layout_width="80dp"
@@ -14,8 +15,8 @@
         android:id="@+id/expand_icon1"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         app:eiv_animationDuration="300"
         app:eiv_color="#000"
         app:eiv_roundedCorners="false"
@@ -31,9 +32,9 @@
         app:eiv_color="#000"
         app:eiv_colorLess="@color/colorPrimary"
         app:eiv_colorMore="@color/colorAccent"
+        app:eiv_padding="8dp"
         app:eiv_roundedCorners="false"
-        app:eiv_switchColor="true"
-        app:eiv_padding="8dp"/>
+        app:eiv_switchColor="true"/>
 
   </FrameLayout>
 
@@ -52,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Swipe finger up and down"
+        android:text="@string/swipe_finger_up_and_down"
         android:textStyle="italic"/>
 
   </FrameLayout>
@@ -82,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Click"
+        android:text="@string/click"
         android:textStyle="bold"/>
 
   </FrameLayout>

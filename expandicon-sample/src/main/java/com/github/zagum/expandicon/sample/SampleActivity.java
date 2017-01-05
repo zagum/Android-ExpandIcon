@@ -1,4 +1,4 @@
-package com.github.zagum.expandiconview;
+package com.github.zagum.expandicon.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +14,7 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
   private ExpandIconView expandIconView3;
   private GestureDetector gestureDetector;
   private View swipeDetectionView;
-  private View click;
+  private View clickView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +28,8 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
     expandIconView1.setFraction(.5f, false);
     expandIconView2.setFraction(.5f, false);
 
-    click = findViewById(R.id.click);
-    click.setOnClickListener(new View.OnClickListener() {
+    clickView = findViewById(R.id.click);
+    clickView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         expandIconView3.switchState();
@@ -58,21 +58,6 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
   }
 
   @Override
-  public boolean onDown(MotionEvent e) {
-    return false;
-  }
-
-  @Override
-  public void onShowPress(MotionEvent e) {
-
-  }
-
-  @Override
-  public boolean onSingleTapUp(MotionEvent e) {
-    return false;
-  }
-
-  @Override
   public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
     float fraction;
     if (Math.signum(distanceY) > 0) {
@@ -86,12 +71,23 @@ public class SampleActivity extends AppCompatActivity implements GestureDetector
   }
 
   @Override
-  public void onLongPress(MotionEvent e) {
+  public boolean onDown(MotionEvent e) {
+    return false;
+  }
 
+  @Override
+  public boolean onSingleTapUp(MotionEvent e) {
+    return false;
   }
 
   @Override
   public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
     return false;
   }
+
+  @Override
+  public void onShowPress(MotionEvent e) {}
+
+  @Override
+  public void onLongPress(MotionEvent e) {}
 }

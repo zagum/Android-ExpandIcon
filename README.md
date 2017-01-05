@@ -1,9 +1,9 @@
 Android-ExpandIcon
 ================
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--ExpandIcon-brightgreen.svg?style=flat)]()
-[![Release](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
-[![API](https://img.shields.io/badge/API-15%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=15)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--ExpandIcon-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/4966)
+[![JitPack](https://jitpack.io/v/zagum/Android-ExpandIcon.svg)](https://jitpack.io/#zagum/Android-ExpandIcon)
+[![API](https://img.shields.io/badge/API-15%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=15)
 
 Nice and simple customizable implementation of Google style up/down arrow.
 
@@ -76,7 +76,7 @@ Public methods:
     expandIconView.setFraction(.3f, true);
 ```
 
-See sample project for more information
+See [sample](https://github.com/zagum/Android-ExpandIcon/tree/master/expandicon-sample) project for more information.
 
 License
 -------

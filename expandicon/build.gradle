@@ -12,4 +12,3 @@ android {
     minSdkVersion 15
   }
 }
-
