@@ -61,7 +61,7 @@ Fully customized implementation:
         app:eiv_color="#000"
         app:eiv_colorLess="#f00"
         app:eiv_colorMore="#00f"
-	app:eiv_colorIntermediate="#0f0"
+        app:eiv_colorIntermediate="#0f0"
         app:eiv_roundedCorners="false"
         app:eiv_switchColor="true"
         app:eiv_padding="8dp"/>
