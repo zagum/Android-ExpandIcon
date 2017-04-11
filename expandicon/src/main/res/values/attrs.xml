@@ -23,6 +23,7 @@
     <attr name="eiv_color" format="color"/>
     <attr name="eiv_colorMore" format="color"/>
     <attr name="eiv_colorLess" format="color"/>
+    <attr name="eiv_colorIntermediate" format="color"/>
     <attr name="eiv_animationDuration" format="integer"/>
     <attr name="eiv_padding" format="dimension"/>
   </declare-styleable>
