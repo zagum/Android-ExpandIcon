@@ -34,7 +34,7 @@ Add the dependency
 
 ```groovy
 dependencies {
-    compile 'com.github.zagum:Android-ExpandIcon:1.1.3'
+    compile 'com.github.zagum:Android-ExpandIcon:1.2.0'
 }
 ```
 
@@ -61,6 +61,7 @@ Fully customized implementation:
         app:eiv_color="#000"
         app:eiv_colorLess="#f00"
         app:eiv_colorMore="#00f"
+        app:eiv_colorIntermediate="#0f0"
         app:eiv_roundedCorners="false"
         app:eiv_switchColor="true"
         app:eiv_padding="8dp"/>
@@ -74,6 +75,8 @@ Public methods:
     expandIconView.setState(ExpandIconView.LESS, true);
     
     expandIconView.setFraction(.3f, true);
+    
+    expandIconView.setAnimationDuration(2000);
 ```
 
 See [sample](https://github.com/zagum/Android-ExpandIcon/tree/master/expandicon-sample) project for more information.
