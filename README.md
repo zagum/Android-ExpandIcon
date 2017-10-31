@@ -34,7 +34,7 @@ Add the dependency
 
 ```groovy
 dependencies {
-    compile 'com.github.zagum:Android-ExpandIcon:1.2.0'
+    compile 'com.github.zagum:Android-ExpandIcon:1.2.1'
 }
 ```
 
