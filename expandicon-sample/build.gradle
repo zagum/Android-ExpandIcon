@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(':expandicon')
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation project(':expandicon')
+    implementation("androidx.appcompat:appcompat:$appcompatLibVersion")
 }
 
 android {
