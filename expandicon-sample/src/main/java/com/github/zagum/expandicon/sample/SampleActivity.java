@@ -1,10 +1,11 @@
 package com.github.zagum.expandicon.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.zagum.expandicon.ExpandIconView;
 

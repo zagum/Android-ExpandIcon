@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation("androidx.annotation:annotation:$annotationLibVersion")
 }
 
 android {
